@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الجهاز التنفسي</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            color: cyan;
+        }
+        #quiz {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 2px solid cyan;
+            border-radius: 10px;
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: cyan;
+            color: black;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: lightblue;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ا العلوم - الجهاز التنفسي - عمر ابو عكر</h1>
+    <div id="quiz">
+        <label for="studentName">اسم الطالب:</label>
+        <input type="text" id="studentName" placeholder="أدخل اسم الطالب" required>
+
+        <div id="questions"></div>
+        <button onclick="submitAnswers()">إرسال الإجابات</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "ما هو العضو الرئيسي في الجهاز التنفسي؟", options: ["القلب", "الرئة", "الكبد", "المعدة"], answer: 1 },
+            { question: "ما هو الغرض من الشُعب الهوائية؟", options: ["نقل الدم", "توصيل الهواء إلى الرئتين", "معالجة الطعام", "إزالة الفضلات"], answer: 1 },
+            { question: "ما هو الجزء الذي يفصل بين الصدر والبطن؟", options: ["القلب", "الحجاب الحاجز", "الرئة", "الشُعبة الهوائية"], answer: 1 },
+            { question: "ما هي وظيفة الحويصلات الهوائية؟", options: ["تخزين الهواء", "تبادل الغازات", "ترطيب الهواء", "تنقية الهواء"], answer: 1 },
+            { question: "أي من الجمل التالية صحيحة بشأن التنفس؟", options: ["يحدث التنفس في الرئتين فقط", "يحدث التنفس في الأنف فقط", "يتضمن الشهيق والزفير", "لا يحدث في الخلايا"], answer: 2 },
+            { question: "ما هو الغاز الذي نستنشقه ويدعم عملية التنفس؟", options: ["ثاني أكسيد الكربون", "الأكسجين", "النيتروجين", "الهيدروجين"], answer: 1 },
+            { question: "كيف يتم التحكم في عملية التنفس؟", options: ["بواسطة الجهاز العصبي", "بواسطة الجهاز الهضمي", "بواسطة الجهاز الدوري", "بواسطة العضلات الهيكلية"], answer: 0 },
+            { question: "أي من الأعضاء التالية تعمل على ترطيب وتنقية الهواء؟", options: ["الأنف", "الرئتين", "القلب", "الكبد"], answer: 0 },
+            { question: "ما هو الدور الأساسي للحجاب الحاجز؟", options: ["نقل الدم", "المساعدة في الشهيق والزفير", "حماية الرئتين", "تنظيم حرارة الجسم"], answer: 1 },
+            { question: "ما هو متوسط معدل التنفس للشخص البالغ في الراحة؟", options: ["5-10 تنفسات في الدقيقة", "12-20 تنفسات في الدقيقة", "25-30 تنفسات في الدقيقة", "30-40 تنفسات في الدقيقة"], answer: 1 },
+            { question: "ما هي حالة نقص الأكسجين في الجسم؟", options: ["الأكسجين", "نقص الأكسجين", "فرط الأكسجين", "الأكسجة"], answer: 1 },
+            { question: "أي من التالي قد يؤثر سلبًا على وظيفة الجهاز التنفسي؟", options: ["ممارسة الرياضة", "التدخين", "تناول الطعام الصحي", "النوم الجيد"], answer: 1 },
+            { question: "ما هو الغرض من السعال؟", options: ["تنظيف الحلق", "نقل الهواء", "معالجة الطعام", "الحفاظ على الرطوبة"], answer: 0 },
+            { question: "أي من الأمراض التالية تؤثر على الجهاز التنفسي؟", options: ["السكري", "الربو", "ارتفاع ضغط الدم", "التهاب الكبد"], answer: 1 },
+            { question: "كيف يؤثر التلوث على الجهاز التنفسي؟", options: ["يحسن وظائفه", "يؤدي إلى مشاكل صحية", "لا يؤثر عليه", "يحسن تنقية الهواء"], answer: 1 },
+            { question: "أي من التالي يُعتبر جزءًا من الجهاز التنفسي؟", options: ["القلب", "الأنف", "الكبد", "الكلى"], answer: 1 },
+            { question: "ما هو تأثير ممارسة الرياضة على التنفس؟", options: ["يقلل من معدل التنفس", "يزيد من معدل التنفس", "لا يؤثر على التنفس", "يسبب صعوبة في التنفس"], answer: 1 },
+            { question: "ما هو الغاز الذي ينتج عن عملية التنفس؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "النيتروجين", "الهيدروجين"], answer: 1 },
+            { question: "ما هو التأثير الطويل الأمد للتدخين على الجهاز التنفسي؟", options: ["يحسن القدرة على التنفس", "يسبب السرطان", "لا يؤثر على الصحة", "يحسن المناعة"], answer: 1 },
+            { question: "ما هي وظيفة الأنف في الجهاز التنفسي؟", options: ["ترطيب الهواء وتنقيته", "نقل الهواء إلى القلب", "تنظيم درجة الحرارة", "إنتاج الأكسجين"], answer: 0 }
+        ];
+
+        function loadQuestions() {
+            const questionsDiv = document.getElementById('questions');
+            questions.forEach((q, index) => {
+                const questionHTML = `<div class="question">
+                    <p>${index + 1}. ${q.question}</p>
+                    ${q.options.map((option, i) => `
+                        <label>
+                            <input type="radio" name="question${index}" value="${i}">
+                            ${option}
+                        </label><br>
+                    `).join('')}
+                </div>`;
+                questionsDiv.innerHTML += questionHTML;
+            });
+        }
+
+        function submitAnswers() {
+            let score = 0;
+            const studentName = document.getElementById('studentName').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<h2>نتيجة ${studentName}:</h2>`;
+
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    const feedback = document.createElement('p');
+                    feedback.textContent = `سؤال ${index + 1}: ${q.question}`;
+                    if (parseInt(selectedOption.value) === q.answer) {
+                        score++;
+                        feedback.classList.add('correct');
+                        feedback.innerHTML += ' - إجابة صحيحة!';
+                    } else {
+                        feedback.classList.add('incorrect');
+                        feedback.innerHTML += ' - إجابة خاطئة!';
+                    }
+                    resultDiv.appendChild(feedback);
+                }
+            });
+
+            resultDiv.innerHTML += `<p>عدد النقاط: ${score} من ${questions.length}</p>`;
+        }
+
+        loadQuestions();
+    </script>
+</body>
+</html>
